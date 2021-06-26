@@ -1,0 +1,550 @@
+<script>
+var graphs = false;
+	$(document).ready(function() {
+    
+    $('.changeItem').change(function(){
+        $('#generate').click();
+    });
+
+    $(document).keypress(function (e) {
+        var key = e.which;
+         if(key == 13)  // the enter key code
+         {
+            $('#generate').click();
+             return false;  
+          }
+    });
+    
+    $('#video-button').hide();
+    $('#plot-no-dots').hide();
+    $('#dotSliderDiv').hide();
+    $('#gridpaper').hide();
+    
+    var testing = false;
+    
+    $('#generate').click(function(){
+        if(!testing){$("#answer").hide(); $("#show-answer").val("Show Answer");}
+        $('#plot-dots').hide();
+        $('#plot-no-dots').hide();
+        
+        var type;
+        // handles the formatting for selecting any type
+        if($("#type").val()=="any"){type = random(1,9);}
+        else{type = parseInt($("#type").val())}
+
+        if(type == 5 || type == 6 || type == 9){
+          $('#dotSliderDiv').show();
+       }
+       else{      
+          $('#dotSliderDiv').hide();       
+       }  
+       
+       if( type == 9 ){ graphs = true; } else { graphs = false; }
+       
+        generate(type); 
+        
+     });
+
+
+    $("#show-answer").click(function(){
+       if($("#answer").is(":hidden") ){
+          $("#answer").show();
+          if(graphs){
+            if($("#dotSlider").is(':checked')){
+                 $('#plot-dots').show();
+                 $('#plot-no-dots').hide();
+             }
+             else {
+                 $('#plot-dots').hide();
+                 $('#plot-no-dots').show();
+              }
+          }
+          $("#show-answer").val("Hide Answer");
+       } else{
+         $("#answer").hide();
+         if(graphs){
+            $('#plot-dots').hide();
+            $('#plot-no-dots').hide();
+         }
+         $("#show-answer").val("Show Answer");
+        }
+    });
+    
+    if(testing){ $("#answer").show();}
+    
+    $('#dotSlider').prop('checked', true);
+    $("#dot-button").click(function(){
+        
+        if($('#dotSlider').is(':checked')){
+            $('#plot-dots').hide();
+            $('#plot-no-dots').show();
+            $(this).val('Show Dots');
+            $('#dotSlider').prop('checked', false);
+            
+        } else {
+            $('#plot-dots').show();
+            $('#plot-no-dots').hide();
+            $(this).val('Hide Dots');
+            $('#dotSlider').prop('checked', true);
+        }
+    });
+    
+	});
+	function generate(type){
+       
+       if(type == 9){
+         $('#gridpaper').show();
+       }else{
+         $('#gridpaper').hide();
+       }
+       
+       
+       var videoLinks = ["https://www.youtube.com/watch?v=JCrgUAG31aw",
+                         "https://www.youtube.com/watch?v=MJr9fNiABfQ&t",
+                         "https://www.youtube.com/watch?v=mcB_K-s7hB4",
+                         "https://www.youtube.com/watch?v=lqg6_C98oq8",
+                         "https://www.youtube.com/watch?v=pxPSbzdTA9g",
+                         "https://www.youtube.com/watch?v=QjLm0-hxyw4",
+                         "https://www.youtube.com/watch?v=tdR1GXRLeFI",
+                         "https://www.youtube.com/watch?v=bFCy4lw-YaY",
+                         "https://www.youtube.com/watch?v=2GdJXOGc8sI"];
+       
+       if(typeof videoLinks[type-1] !== "undefined"){ 
+         $("#videoLink"). attr("href", videoLinks[type-1]);
+         $('#video-button').show();
+       }
+       else{
+         $('#video-button').hide();
+       }
+       
+       var problem = "";
+       var answer = "";
+       var a,b,c,d,e,f,g,h,x1,x2,y1,y2,slope,yint;
+       $("#generated").html("");
+       $("#answer").html("");
+       
+       switch(type) {
+           // Find the slope between two points
+           case 1: 
+           x1 = random(-10,10);
+           y1 = random(-10,100);
+           a = random(2,5,1);
+           slope = non_zero_random(-20,20);
+           b = a*slope;
+           x2 = a+x1;
+           y2 = b+y1;
+           
+           problem = "Find the rate of change (slope) between the points \\(("+x1+", "+y1+")\\) and \\(("+x2+", "+y2+")\\)";           
+           answer = "Rate of Change (Slope) \\(= "+slope+"\\)";
+           
+           break;
+           
+           // Given two points, write equation
+           case 2:
+           x1 = random(1,5);
+           y1 = random(-10,10);
+           a = random(2,5);
+           slope = non_zero_random(-9,9);
+           b = a*slope;
+           x2 = a+x1;
+           y2 = b+y1;
+           yint = y1-slope*x1;
+           
+           problem = "Find the equation of the line that goes through the points \\(("+x1+", "+y1+")\\) and \\(("+x2+", "+y2+")\\)"; 
+           answer = "\\(y = "+slope+"x + "+yint+"\\)";
+              
+           break;
+		  
+           // Given table, find slope
+           case 3:
+           x1 = random(1,5);
+           y1 = random(-10,10);
+           slope = non_zero_random(-9,9);
+           var scale = random(1,4); // scale factor so that the x's don't always count by 1
+           problem = "Find the rate of change (slope)";
+           var num = random(8,14);
+           
+           // tableMaker(x1,y1,slope,scale,num)
+           problem += tableMaker(x1,y1,slope,scale,num);
+           answer = "Rate of Change (Slope) \\(= "+slope+"\\)";
+           break;
+           
+           // Given table, write equation
+           case 4:
+           x1 = random(-5,5);
+           y1 = random(-10,10);          
+           slope = non_zero_random(-9,9);
+           var scale = random(1,4); // scale factor so that the x's don't always count by 1
+           problem = "Find the equation of the line"; 
+           var num = random(8,14);
+           
+           // tableMaker(x1,y1,slope,scale,num)
+           problem += tableMaker(x1,y1,slope,scale,num);
+           yint = y1-slope*x1;
+           answer = "\\(y = "+slope+"x + "+yint+"\\)";
+           break;
+           
+           // Given graph, find slope
+           case 5:
+           var line = getLinear();
+           var exp = line.n/line.d+"x + "+line.b;          
+           draw(exp,false,"plot-no-dots");
+           draw(exp,true,"plot-dots");
+           if($("#dotSlider").is(':checked')){
+               $('#plot-dots').show();
+               $('#plot-no-dots').hide();
+           }
+           else {
+               $('#plot-dots').hide();
+               $('#plot-no-dots').show();
+            }
+           problem = "Find the rate of change (slope)";
+           answer = "Rate of Change (Slope) = \\("+simplifyFrac(line.n,line.d)+"\\)";
+           break;
+           
+           // Given graph, write equation
+           case 6:
+           var line = getLinear();
+           var exp = line.n/line.d+"x + "+line.b;
+           draw(exp,true,"plot-dots");
+           draw(exp,false,"plot-no-dots");
+           if($("#dotSlider").is(':checked')){
+               $('#plot-dots').show();
+               $('#plot-no-dots').hide();
+           }
+           else {
+               $('#plot-dots').hide();
+               $('#plot-no-dots').show();
+            }
+           problem = "Find the equation of the line"; 
+           answer = "\\(y = "+simplifyFrac(line.n,line.d)+"x + "+line.b+"\\)";
+           break;  
+           
+           // Rewrite in slope-intercept form
+           case 7: 
+           a = non_zero_random(-9,9);
+           c = a*non_zero_random(-5,5);
+           b = non_zero_random(-9,9);
+           var slope = simplifyFrac((-1*b),a);  
+           var eq = "\\("+equationSwap(mix([b+"x",a+"y"]),c)+"\\)";          
+           problem = "Write the equation "+eq+" in slope-intercept \\(y = mx + b\\) form.";
+           answer = "\\(y = "+slope+"x + "+(c/a)+"\\)";
+
+           break;
+		   
+           // Find slope and y-intercept of an equation
+           case 8:
+           a = non_zero_random(-9,9);
+           c = a*non_zero_random(-5,5);
+           b = non_zero_random(-9,9);
+           var slope = simplifyFrac((-1*b),a);     
+           var eq = "\\("+equationSwap(mix([b+"x",a+"y"]),c)+"\\)";
+           problem = "Determine the rate of change (slope) and \\(y\\)-intercept of the equation "+eq;
+           answer = "\\(y = "+slope+"x + "+(c/a)+"\\)<br>";
+           answer += "Rate of Change (Slope) \\(= "+slope+", y\\)-intercept \\(= "+(c/a)+"\\)";
+
+           break;
+           
+           // Given equation create table and graph
+           case 9:
+           var line = getLinear();
+           var exp = line.n/line.d+"x + "+line.b;
+           draw(exp,true,"plot-dots");
+           draw(exp,false,"plot-no-dots");
+           var terms = [simplifyFrac(line.n,line.d)+"x"];
+           if(line.b != 0){ terms.push(line.b); }
+           problem = "Graph the line \\(y = "+mix(terms)+"\\) and create a table for \\(x\\) values of 0 to 5.";
+           answer = "Slope = \\("+simplifyFrac(line.n,line.d)+"\\), \\(y\\)-intercept: \\("+line.b+"\\)";
+           answer += tableMaker(0,line.b,(line.n/line.d),1,6);
+           
+           break;
+           
+       }
+            
+       $("#generated").html(doublesigns(problem));
+       $("#answer").html(doublesigns(answer));
+       
+       renderMathInElement(document.body);
+	}
+    
+    
+    // function to create a table
+    function tableMaker(x1,y1,slope,scale,num){
+       
+       var output = "";
+       var xstring = "<td>"+x1+"</td>"; 
+       var ystring = "<td>"+y1+"</td>";
+           
+       output += "<table border='1'>";
+       output += "<tr><td>\\(x\\)</td>";
+           
+       for(var i = 1; i < num; i++){
+              
+          xstring += "<td>"+(i*scale+x1)+"</td>";
+          ystring += "<td>"+(Math.round((i*scale*slope+y1)*1000)/1000)+"</td>";
+           
+       }
+           
+       output += xstring+"</tr><tr><td>\\(y\\)</td>"+ystring+"</tr>";
+       output += "</table>";
+       
+       return output;
+         
+    }
+    
+    // function to randomize the sides of the equation
+    function equationSwap(left,right){
+        
+        var output = "";
+        
+        switch(random(0,1)){
+           
+           case 0:
+           output = left+" = "+right;
+
+           break;
+           
+           case 1:
+           output = right+" = "+left;
+           break;
+        
+        }
+        
+        return output;
+    }
+    
+    // function to rearrange the pieces of a polynomial
+    function mix(termArray){
+       
+       var output = "";
+       
+       if(termArray.length == 0){
+            
+            output = "0";
+            
+       }
+       else{
+       
+          var terms = shuffle(termArray);
+          
+          output = terms[0];
+          
+          for(var i = 1; i < terms.length; i++){
+              
+              output += " + "+terms[i];
+          
+          }
+          
+       }
+       
+       return output;
+    }
+    
+    function shuffle(array) {
+       array.sort(() => Math.random() - 0.5);
+       return array;
+    }
+    
+    // helper function for graphing to produce a line with a viable y-intercept and slope that'll fit in 10 by 10
+    function getLinear(){
+       var found = false;
+       var num, den, slope, yInt;
+       
+       do{
+           // generate values to be tested
+           yInt = random(-9,9); 
+           num = non_zero_random(-10,10);
+           den = non_zero_random(-5,5);
+           
+           // test to see if values produce another coordinate in 10 by 10 
+           for(var i = -9; i < 9; i++){
+           
+              var yVal = num/den*i+yInt;
+              
+              if(yVal > -10 && yVal < 10){
+                 
+                 found = true;
+              
+              }
+            
+           }
+       }
+       while(!found);
+       
+       return {n:num, d:den, b:yInt};
+    }    
+    
+    // function that draws the graph between -10 and 10
+    function draw(expression,dotBoolean,plot) {
+    try {
+      // compile the expression once
+      var expr = math.compile(expression)
+
+      // evaluate the expression repeatedly for different values of x
+      var xValues = math.range(-11, 11, 0.5).toArray();
+      const yValues = xValues.map(function (x) {
+        return expr.eval({x: x});
+      })
+      
+      var xValues2 = [];
+      var yValues2 = []
+      for(var i = 0; i < xValues.length; i ++){         
+         var yvalue = expr.eval({x: xValues[i]});
+
+            // creates the "pretty points" to graph points at integer y-values
+            if(Number.isInteger(yvalue) && Number.isInteger(xValues[i])){        
+               xValues2.push(xValues[i]);
+               yValues2.push(yvalue);        
+            }          
+      }     
+      
+       
+      // render the line using plotly
+      var trace1 = {
+        x: xValues,
+        y: yValues,
+        type: 'scatter',
+        mode: 'lines',        
+        line: {
+          color: '#3F4591',
+          width: 2
+        },
+        name:"",
+      };
+      
+      if(dotBoolean){
+      
+      // render the "pretty points" using plotly
+      var trace2 = {
+        x: xValues2,
+        y: yValues2,
+        type: 'scatter',
+        mode: 'markers',
+        marker: {
+          color: '#3F4591',
+          size: 8
+        },
+        hoverinfo:'none'
+      };
+      
+      }
+      
+      var axis_template ={
+        showgrid: true,
+        zeroline: true,
+        nticks: 23,
+        range: [-11,11], 
+        gridcolor: '#bdbdbd', //grid color
+        gridwidth: 1.2, //grid width
+        zerolinecolor: 'black', // axes color
+        zerolinewidth: 1.5, // axes widths
+        showticklabels:false
+      };        
+      
+      // make grid smaller for mobile
+      var gridsize;
+      var indent;
+      // gridsize= Math.min(.95*window.innerWidth,550);
+      
+      if(window.innerWidth > 601){
+         gridsize = 550;
+         indent = 20;
+      }else{
+         gridsize = 350;
+         indent = 0;
+      }
+      
+      var xTickMarkLabels =   {
+        x: [-10.1,-9.1,-8.1,-7.1,-6.1,-5.1,-4.1,-3.1,-2.1,-1.1,0,1,2,3,4,5,6,7,8,9,10],
+        y: [-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1],
+        mode: 'text',
+        text:[-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10],
+        textposition:"bottom",
+        textfont: {
+          size:13,
+        },
+        hoverinfo:'none'
+      };   
+      
+      var yTickMarkLabels =   {
+        y: [-10.1,-9.1,-8.1,-7.1,-6.1,-5.1,-4.1,-3.1,-2.1,-1.1,0,1,2,3,4,5,6,7,8,9,10],
+        x: [-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1,-0.1],
+        mode: 'text',
+        text:[-10,-9,-8,-7,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10],
+        textposition:"left",
+        textfont: {
+          size:13,
+        },
+        hoverinfo:'none'
+      };
+      
+      var layout = {
+        xaxis:axis_template,
+        yaxis:axis_template,
+        showlegend: false,
+        width: gridsize,
+        height: gridsize,
+        hovermode: 'closest',   
+        font:{size: 18},
+        margin: {l: indent,  r: 30, t: 20}
+      };
+      
+      layout.annotations= [
+      {
+         x: 0,
+         y: 11,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 0,
+         ay: 35
+       },
+       {
+         x: 0,
+         y: -11,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 0,
+         ay: -35
+       },
+       {
+         x: 11,
+         y: 0,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: -35,
+         ay: 0
+       },
+       {
+         x: -11,
+         y: 0,
+         showarrow: true,
+         arrowsize:2,
+         arrowwidth:1,
+         arrowhead:3,
+         ax: 35,
+         ay: 0
+       }
+
+     ];
+      
+      var data;
+      if(dotBoolean){
+        data = [trace1,trace2,xTickMarkLabels,yTickMarkLabels];
+      }
+      else{
+         data = [trace1,xTickMarkLabels,yTickMarkLabels];
+      }
+      Plotly.newPlot(plot, data, layout,{displayModeBar: false});
+    }
+    catch (err) {
+      console.error(err)
+      alert(err)
+    }
+  }
+</script>
