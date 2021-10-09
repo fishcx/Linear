@@ -157,31 +157,28 @@ var graphs = false;
 		  
            // Given table, find slope
            case 3:
-           x1 = random(1,5);
-           y1 = random(-10,10);
-           slope = non_zero_random(-9,9);
-           var scale = random(1,4); // scale factor so that the x's don't always count by 1
+           var line = getLinear();
+           var scale = random(1,3); // scale factor so that the x's don't always count by 1
+
            problem = "Find the rate of change (slope)";
-           var num = random(8,14);
-           
-           // tableMaker(x1,y1,slope,scale,num)
-           problem += tableMaker(x1,y1,slope,scale,num);
-           answer = "Rate of Change (Slope) \\(= "+slope+"\\)";
+           var num = random(5,8);
+           var start = random(-3,3);
+
+           problem += tableMakerUsingSlope(line.n,line.d,line.b,scale,num,start);
+           answer = "Rate of Change (Slope) \\(= "+simplifyFrac(line.n,line.d)+"\\)";
            break;
            
            // Given table, write equation
            case 4:
-           x1 = random(-5,5);
-           y1 = random(-10,10);          
-           slope = non_zero_random(-9,9);
-           var scale = random(1,4); // scale factor so that the x's don't always count by 1
+           var line = getLinear();
+           var scale = random(1,2); // scale factor so that the x's don't always count by 1
            problem = "Find the equation of the line"; 
-           var num = random(8,14);
+           var num = random(5,8);
+           var start = random(-2,2);
            
-           // tableMaker(x1,y1,slope,scale,num)
-           problem += tableMaker(x1,y1,slope,scale,num);
-           yint = y1-slope*x1;
-           answer = "\\(y = "+slope+"x + "+yint+"\\)";
+           problem += tableMakerUsingSlope(line.n,line.d,line.b,scale,num,start);
+           
+           answer = "\\(y = "+line.b+" + "+simplifyFrac(line.n,line.d)+"x\\)";
            break;
            
            // Given graph, find slope
@@ -217,7 +214,7 @@ var graphs = false;
                $('#plot-no-dots').show();
             }
            problem = "Find the equation of the line"; 
-           answer = "\\(y = "+simplifyFrac(line.n,line.d)+"x + "+line.b+"\\)";
+           answer = "\\(y = "+line.b+" + "+simplifyFrac(line.n,line.d)+"x\\)";
            break;  
            
            // Rewrite in slope-intercept form
@@ -227,8 +224,8 @@ var graphs = false;
            b = non_zero_random(-9,9);
            var slope = simplifyFrac((-1*b),a);  
            var eq = "\\("+equationSwap(mix([b+"x",a+"y"]),c)+"\\)";          
-           problem = "Write the equation "+eq+" in slope-intercept \\(y = mx + b\\) form.";
-           answer = "\\(y = "+slope+"x + "+(c/a)+"\\)";
+           problem = "Write the equation "+eq+" in slope-intercept \\(y = b + mx\\) form.";
+           answer = "\\(y = "+(c/a)+" + "+slope+"x\\)";
 
            break;
 		   
@@ -253,9 +250,11 @@ var graphs = false;
            draw(exp,false,"plot-no-dots");
            var terms = [simplifyFrac(line.n,line.d)+"x"];
            if(line.b != 0){ terms.push(line.b); }
-           problem = "Graph the line \\(y = "+mix(terms)+"\\) and create a table for \\(x\\) values of 0 to 5.";
+           var xChangeSimp = Math.abs(line.d/gcd(line.n,line.d));
+           var maxX = 5*xChangeSimp;
+           problem = "Graph the line \\(y = "+mix(terms)+"\\) and create a table for \\(x\\) values of 0 to "+maxX+" counting by "+Math.abs(line.d)+".";
            answer = "Slope = \\("+simplifyFrac(line.n,line.d)+"\\), \\(y\\)-intercept: \\("+line.b+"\\)";
-           answer += tableMaker(0,line.b,(line.n/line.d),1,6);
+           answer += tableMakerUsingSlope(line.n,line.d,line.b,1,6,0);
            
            break;
            
@@ -268,6 +267,35 @@ var graphs = false;
 	}
     
     
+    // function to create a table
+    function tableMakerUsingSlope(yChange,xChange,yInt,scale,numCols,start){
+       
+      var xChangeAbs = Math.abs(xChange);
+
+       var x1 = start*xChangeAbs;
+       var y1 = round(((yChange/xChange)*x1+yInt)*10000)/10000; // shouldn't need to round here, but just in case
+       var output = "";
+       var xstring = "<td>"+x1+"</td>"; 
+       var ystring = "<td>"+y1+"</td>";
+           
+       output += "<table border='1'>";
+       output += "<tr><td>\\(x\\)</td>";
+           
+       for(var i = 1; i < numCols; i++){
+          var currX = i*xChangeAbs*scale+x1;
+          var currY = round(((yChange/xChange)*currX+yInt)*10000)/10000; // shouldn't need to round here eithere
+          xstring += "<td>"+currX+"</td>";
+          ystring += "<td>"+currY+"</td>";
+           
+       }
+           
+       output += xstring+"</tr><tr><td>\\(y\\)</td>"+ystring+"</tr>";
+       output += "</table>";
+       
+       return output;
+         
+    }
+
     // function to create a table
     function tableMaker(x1,y1,slope,scale,num){
        
