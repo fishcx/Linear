@@ -217,14 +217,14 @@ var graphs = false;
            answer = "\\(y = "+line.b+" + "+simplifyFrac(line.n,line.d)+"x\\)";
            break;  
            
-           // Rewrite in slope-intercept form
+           // Rewrite in y = b + mx form
            case 7: 
            a = non_zero_random(-9,9);
            c = a*non_zero_random(-5,5);
            b = non_zero_random(-9,9);
            var slope = simplifyFrac((-1*b),a);  
            var eq = "\\("+equationSwap(mix([b+"x",a+"y"]),c)+"\\)";          
-           problem = "Write the equation "+eq+" in slope-intercept \\(y = b + mx\\) form.";
+           problem = "Write the equation "+eq+" in \\(y = b + mx\\) form.";
            answer = "\\(y = "+(c/a)+" + "+slope+"x\\)";
 
            break;
