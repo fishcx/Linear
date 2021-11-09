@@ -126,33 +126,26 @@ var graphs = false;
        switch(type) {
            // Find the slope between two points
            case 1: 
-           x1 = random(-10,10);
-           y1 = random(-10,100);
-           a = random(2,5);
-           slope = non_zero_random(-20,20);
-           b = a*slope;
-           x2 = a+x1;
-           y2 = b+y1;
-           
-           problem = "Find the rate of change (slope) between the points \\(("+x1+", "+y1+")\\) and \\(("+x2+", "+y2+")\\)";           
-           answer = "Rate of Change (Slope) \\(= "+slope+"\\)";
-           
+           var line = getLinear();
+           var start = random(-2,2);
+           var x1 = start*Math.abs(line.d);
+           var y1 = round(((line.n/line.d)*x1+line.b)*10000)/10000; // shouldn't need to round here, but just in case
+           var x2 = x1*non_zero_random(-2,2)*Math.abs(line.d);
+           var y2 = round(((line.n/line.d)*x2+line.b)*10000)/10000; // shouldn't need to round here, but just in case
+           problem = "Find the rate of change (slope) of the line that goes through the points \\(("+x1+", "+y1+")\\) and \\(("+x2+", "+y2+")\\)"; 
+           answer = "Rate of change (slope) = "+simplifyFrac(line.n,line.d); 
            break;
            
            // Given two points, write equation
            case 2:
-           x1 = random(-5,5);
-           y1 = random(-10,10);
-           a = random(2,5);
-           slope = non_zero_random(-9,9);
-           b = a*slope;
-           x2 = a+x1;
-           y2 = b+y1;
-           yint = y1-slope*x1;
-           
+           var line = getLinear();
+           var start = random(-2,2);
+           var x1 = start*Math.abs(line.d);
+           var y1 = round(((line.n/line.d)*x1+line.b)*10000)/10000; // shouldn't need to round here, but just in case
+           var x2 = x1*non_zero_random(-2,2)*Math.abs(line.d);
+           var y2 = round(((line.n/line.d)*x2+line.b)*10000)/10000; // shouldn't need to round here, but just in case
            problem = "Find the equation of the line that goes through the points \\(("+x1+", "+y1+")\\) and \\(("+x2+", "+y2+")\\)"; 
-           answer = "\\(y = "+slope+"x + "+yint+"\\)";
-              
+           answer = "\\(y = "+line.b+" + "+simplifyFrac(line.n,line.d)+"x\\)"; 
            break;
 		  
            // Given table, find slope
@@ -265,7 +258,6 @@ var graphs = false;
        
        renderMathInElement(document.body);
 	}
-    
     
     // function to create a table
     function tableMakerUsingSlope(yChange,xChange,yInt,scale,numCols,start){
