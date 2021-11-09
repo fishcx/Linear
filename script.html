@@ -128,7 +128,7 @@ var graphs = false;
            case 1: 
            x1 = random(-10,10);
            y1 = random(-10,100);
-           a = random(2,5,1);
+           a = random(2,5);
            slope = non_zero_random(-20,20);
            b = a*slope;
            x2 = a+x1;
@@ -141,7 +141,7 @@ var graphs = false;
            
            // Given two points, write equation
            case 2:
-           x1 = random(1,5);
+           x1 = random(-5,5);
            y1 = random(-10,10);
            a = random(2,5);
            slope = non_zero_random(-9,9);
@@ -462,7 +462,7 @@ var graphs = false;
         zeroline: true,
         nticks: 23,
         range: [-11,11], 
-        gridcolor: '#a2a0a0', //grid color
+        gridcolor: '#BDBDBD', //grid color
         gridwidth: 1.2, //grid width
         zerolinecolor: 'black', // axes color
         zerolinewidth: 1.5, // axes widths
