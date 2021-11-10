@@ -460,7 +460,17 @@ var graphs = false;
         zerolinewidth: 1.5, // axes widths
         showticklabels:false
       };        
-      
+      var axisMarkers =   {
+        x: [-0.25,10.75],
+        y: [10.75,-0.25],
+        mode: 'text',
+        text:["y","x"],
+        textposition:["left","bottom"],
+        textfont: {
+          size:18,
+        },
+        hoverinfo:'none'
+      };
       // make grid smaller for mobile
       var gridsize;
       var indent;
@@ -555,10 +565,10 @@ var graphs = false;
       
       var data;
       if(dotBoolean){
-        data = [trace1,trace2,xTickMarkLabels,yTickMarkLabels];
+        data = [trace1,trace2,xTickMarkLabels,yTickMarkLabels,axisMarkers];
       }
       else{
-         data = [trace1,xTickMarkLabels,yTickMarkLabels];
+         data = [trace1,xTickMarkLabels,yTickMarkLabels,axisMarkers];
       }
       Plotly.newPlot(plot, data, layout,{displayModeBar: false});
     }
