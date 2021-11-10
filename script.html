@@ -130,10 +130,10 @@ var graphs = false;
            var start = random(-2,2);
            var x1 = start*Math.abs(line.d);
            var y1 = round(((line.n/line.d)*x1+line.b)*10000)/10000; // shouldn't need to round here, but just in case
-           var x2 = x1*non_zero_random(-2,2)*Math.abs(line.d);
+           var x2 = x1+non_zero_random(-3,3)*Math.abs(line.d);
            var y2 = round(((line.n/line.d)*x2+line.b)*10000)/10000; // shouldn't need to round here, but just in case
            problem = "Find the rate of change (slope) of the line that goes through the points \\(("+x1+", "+y1+")\\) and \\(("+x2+", "+y2+")\\)"; 
-           answer = "Rate of change (slope) = "+simplifyFrac(line.n,line.d); 
+           answer = "Rate of change (slope) = \\("+simplifyFrac(line.n,line.d)+"\\)"; 
            break;
            
            // Given two points, write equation
@@ -142,7 +142,7 @@ var graphs = false;
            var start = random(-2,2);
            var x1 = start*Math.abs(line.d);
            var y1 = round(((line.n/line.d)*x1+line.b)*10000)/10000; // shouldn't need to round here, but just in case
-           var x2 = x1*non_zero_random(-2,2)*Math.abs(line.d);
+           var x2 = x1+non_zero_random(-3,3)*Math.abs(line.d);
            var y2 = round(((line.n/line.d)*x2+line.b)*10000)/10000; // shouldn't need to round here, but just in case
            problem = "Find the equation of the line that goes through the points \\(("+x1+", "+y1+")\\) and \\(("+x2+", "+y2+")\\)"; 
            answer = "\\(y = "+line.b+" + "+simplifyFrac(line.n,line.d)+"x\\)"; 
