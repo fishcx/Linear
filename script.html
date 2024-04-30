@@ -216,8 +216,9 @@ var graphs = false;
            c = a*non_zero_random(-5,5);
            b = non_zero_random(-9,9);
            var slope = simplifyFrac((-1*b),a);  
-           var eq = "\\("+equationSwap(mix([b+"x",a+"y"]),c)+"\\)";          
-           problem = "Write the equation "+eq+" in \\(y = b + mx\\) form.";
+           //var eq = "\\("+equationSwap(mix([b+"x",a+"y"]),c)+"\\)";   
+           var eq = "\\("+equationMix(b,a,c)+"\\)";       
+           problem = "Write the equation in \\(y = b + mx\\) form:<br>"+eq;
            answer = "\\(y = "+(c/a)+" + "+slope+"x\\)";
 
            break;
@@ -228,10 +229,11 @@ var graphs = false;
            c = a*non_zero_random(-5,5);
            b = non_zero_random(-9,9);
            var slope = simplifyFrac((-1*b),a);     
-           var eq = "\\("+equationSwap(mix([b+"x",a+"y"]),c)+"\\)";
-           problem = "Determine the rate of change (slope) and \\(y\\)-intercept of the equation "+eq;
-           answer = "\\(y = "+slope+"x + "+(c/a)+"\\)<br>";
-           answer += "Rate of Change (Slope) \\(= "+slope+", y\\)-intercept \\(= "+(c/a)+"\\)";
+           //var eq = "\\("+equationSwap(mix([b+"x",a+"y"]),c)+"\\)";
+           var eq = "\\("+equationMix(b,a,c)+"\\)";
+           problem = "Determine the slope and \\(y\\)-intercept of the equation <br>"+eq;
+           answer = "\\(y = "+(c/a)+"+"+slope+"x"+"\\)<br>";
+           answer += "Slope \\(= "+slope+", y\\)-intercept \\(= "+(c/a)+"\\)";
 
            break;
            
@@ -311,7 +313,30 @@ var graphs = false;
        return output;
          
     }
-    
+    // function to mix up an equation
+    function equationMix(xCoeff,yCoeff,constant){
+       var output = "";
+      switch(random(0,2)){
+
+          // x on its own side
+          case 0:
+          output = equationSwap(xCoeff+"x", mix([(-1*yCoeff)+"y",constant]));
+          break;
+
+          // x and y on same side
+          case 1:
+          output = equationSwap(mix([xCoeff+"x",yCoeff+"y"]),constant);
+          break;
+
+          // y on its own side
+          case 2:
+          output = equationSwap(yCoeff+"y", mix([(-1*xCoeff)+"x",constant]));
+          break;
+
+      }
+      return output;
+    }
+
     // function to randomize the sides of the equation
     function equationSwap(left,right){
         
