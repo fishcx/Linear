@@ -29,7 +29,7 @@ var graphs = false;
         
         var type;
         // handles the formatting for selecting any type
-        if($("#type").val()=="any"){type = random(1,9);}
+        if($("#type").val()=="any"){type = random(1,10);}
         else{type = parseInt($("#type").val())}
 
         if(type == 5 || type == 6 || type == 9){
@@ -107,6 +107,7 @@ var graphs = false;
                          "https://www.youtube.com/watch?v=O2IfBjoM3G0",
                          "https://www.youtube.com/watch?v=tdR1GXRLeFI",
                          "https://www.youtube.com/watch?v=bFCy4lw-YaY",
+                         "https://www.youtube.com/watch?v=2GdJXOGc8sI",
                          "https://www.youtube.com/watch?v=2GdJXOGc8sI"];
        
        if(typeof videoLinks[type-1] !== "undefined"){ 
@@ -251,6 +252,100 @@ var graphs = false;
            answer = "Slope = \\("+simplifyFrac(line.n,line.d)+"\\), \\(y\\)-intercept: \\("+line.b+"\\)";
            answer += tableMakerUsingSlope(line.n,line.d,line.b,1,6,0);
            
+           break;
+
+           // Is it linear? Is it proportional?
+           case 10:
+           
+          problem = "Is this linear? Is this proportional?";
+
+           switch(random(0,1)){
+
+
+              // given table
+              case 0:
+              
+                switch(random(0,2)){
+
+                    // linear table
+                    case 0:
+                    var line = getLinear();
+                    var scale = random(1,2); // scale factor so that the x's don't always count by 1
+                    var num = random(5,8);
+                    var start = random(-2,2);
+                    problem += tableMakerUsingSlope(line.n,line.d,line.b,scale,num,start);
+                    answer = `Yes, this is linear with a rate of \\( ${simplifyFrac(line.n,line.d)}\\). `;
+                    if(line.b === 0){ answer += `Yes, this is proportional.`; } else{ answer += `No, this is not proportional.` }
+                    break;
+
+                    // proportional table
+                    case 1:
+                    var line = getProportional();
+                    var scale = random(1,2); // scale factor so that the x's don't always count by 1
+                    var num = random(5,8);
+                    var start = random(-2,2);
+                    problem += tableMakerUsingSlope(line.n,line.d,line.b,scale,num,start);
+                    answer = `Yes, this is linear with a rate of \\( ${simplifyFrac(line.n,line.d)}\\). `;
+                    answer += `Yes, this is proportional.`; 
+                    break;
+
+                    // exponential table
+                    case 2:
+                    problem += getExpTable();
+                    answer = "No, this is not proportional or linear."
+                    break;
+
+                }
+
+              break;
+
+              // given graph
+              case 1:
+
+                switch(random(0,3)){
+                    
+                    // linear
+                    case 0:
+                    var line = getLinear();
+                    var exp = line.n/line.d+"x + "+line.b;
+                    draw(exp,false,"plot-no-dots");
+                    $('#plot-no-dots').show();
+                    answer = `Yes, this is linear with a rate of \\( ${simplifyFrac(line.n,line.d)}\\). `;
+                    if(line.b === 0){ answer += `Yes, this is proportional.`; } else{ answer += `No, this is not proportional.` }
+                    break;
+
+                    // proportional
+                    case 1:
+                    var line = getProportional();
+                    var exp = line.n/line.d+"x + "+line.b;
+                    draw(exp,false,"plot-no-dots");
+                    $('#plot-no-dots').show();
+                    answer = `Yes, this is linear with a rate of \\( ${simplifyFrac(line.n,line.d)}\\). `;
+                    answer += `Yes, this is proportional.`; 
+                    break;
+
+                    // exponential
+                    case 2:
+                    var exp = `${random(2,5)}*${random(2,5)}^x`;
+                    draw(exp,false,"plot-no-dots");
+                    $('#plot-no-dots').show();
+                    answer = `No this is not proportional or linear.`;
+                    break;
+
+                    // quadratic
+                    case 3:
+                    var exp = `${random(2,5)}x^2`;
+                    draw(exp,false,"plot-no-dots");
+                    $('#plot-no-dots').show();
+                    answer = `No this is not proportional or linear.`;
+                    break;
+
+                }
+
+              break;
+
+           }
+
            break;
            
        }
@@ -418,6 +513,68 @@ var graphs = false;
        
        return {n:num, d:den, b:yInt};
     }    
+
+    // helper function for graphing to produce a proportional line with a slope that'll fit in 10 by 10
+    function getProportional(){
+       var found = false;
+       var num, den, slope, yInt;
+       
+       do{
+           // generate values to be tested
+           yInt = 0; 
+           num = non_zero_random(-10,10);
+           den = non_zero_random(-5,5);
+           
+           // test to see if values produce another coordinate in 10 by 10 
+           for(var i = -9; i < 9; i++){
+           
+              var yVal = num/den*i+yInt;
+              
+              if(yVal > -10 && yVal < 10){
+                 
+                 found = true;
+              
+              }
+            
+           }
+       }
+       while(!found);
+       
+       return {n:num, d:den, b:yInt};
+    } 
+// helper function for graphing to produce a line with a viable y-intercept and slope that'll fit in 10 by 10
+    function getExpTable(){
+      
+      var output = "";
+      var rate = random(2,5);
+      var xstring = ""; 
+      var ystring = "";
+      var tableSize = random(5,10);
+      var x1 = random(-2,2); 
+      var yInt = non_zero_random(1,5);
+
+      // produce the y values
+      var ys = [];
+      for(var i = 0; i < tableSize; i ++){             
+        ys.push(Math.round((yInt*Math.pow(rate,x1+i))*1000000)/1000000);
+      }  
+
+      output += "<table border='1'>";
+      output += "<tr><td>\\(x\\)</td>";          
+          
+      for(var i = 0; i < tableSize; i++){
+              
+        xstring += "<td>"+(i+x1)+"</td>";
+        ystring += "<td>"+ys[i]+"</td>";  
+           
+      }
+           
+      output += xstring+"</tr><tr><td>\\(y\\)</td>"+ystring+"</tr>";
+      output += "</table>";
+    
+      return output;
+
+    } 
     
     // function that draws the graph between -10 and 10
     function draw(expression,dotBoolean,plot) {
@@ -426,7 +583,7 @@ var graphs = false;
       var expr = math.compile(expression)
 
       // evaluate the expression repeatedly for different values of x
-      var xValues = math.range(-11, 11, 0.5).toArray();
+      var xValues = math.range(-11, 11, 0.1).toArray();
       const yValues = xValues.map(function (x) {
         return expr.eval({x: x});
       })
