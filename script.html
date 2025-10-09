@@ -584,6 +584,9 @@ var graphs = false;
 
       // evaluate the expression repeatedly for different values of x
       var xValues = math.range(-11, 11, 0.1).toArray();
+      for(var i = 0; i < xValues.length; i ++){ 
+          xValues[i] = Math.round(xValues[i]*100)/100;
+      }
       const yValues = xValues.map(function (x) {
         return expr.eval({x: x});
       })
